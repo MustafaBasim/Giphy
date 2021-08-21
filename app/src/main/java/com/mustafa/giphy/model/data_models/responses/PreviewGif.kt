@@ -1,0 +1,17 @@
+package com.mustafa.giphy.model.data_models.responses
+
+
+import com.google.gson.annotations.SerializedName
+import androidx.annotation.Keep
+
+@Keep
+data class PreviewGif(
+    @SerializedName("height")
+    val height: String? = null,
+    @SerializedName("width")
+    val width: String? = null,
+    @SerializedName("size")
+    val size: String? = null,
+    @SerializedName("url")
+    val url: String? = null
+)

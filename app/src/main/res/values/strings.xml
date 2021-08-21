@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FreshWorks Giphy</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_favourite">Favourite</string>
+    <string name="add_to_favourite">Add to favourite</string>
+    <string name="search_here">Search here</string>
+</resources>
