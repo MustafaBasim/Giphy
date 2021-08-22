@@ -107,13 +107,12 @@ abstract class BaseAdapter<T>(
         if (notify) notifyItemInserted(index)
     }
 
-    open fun addAll(items: ArrayList<T>, notify: Boolean = true) {
-//        DiffUtil.calculateDiff(DiffUtilCallback(arrayList, items)).run {
-//            arrayList.addAll(items)
-//            dispatchUpdatesTo(this@BaseAdapter)
-//        }
-        arrayList.addAll(items)
-        if (notify) notifyDataSetChanged()
+    open fun addAll(items: ArrayList<T>, clearFirst: Boolean = false) {
+        DiffUtil.calculateDiff(DiffUtilCallback(arrayList, items)).run {
+            if (!clearFirst) arrayList.clear()
+            arrayList.addAll(items)
+            dispatchUpdatesTo(this@BaseAdapter)
+        }
     }
 
     open fun addAllAtBottom(items: ArrayList<T>, notify: Boolean = true) {

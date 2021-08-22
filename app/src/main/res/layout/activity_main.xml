@@ -50,7 +50,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
+                app:tabInlineLabel="true"
                 app:tabIndicatorColor="@color/less_white"
+                app:tabIconTint="@color/tab_icon_color_selector"
                 app:tabSelectedTextColor="?attr/colorOnPrimary"
                 app:tabTextColor="@color/lighter_gray" />
         </com.google.android.material.appbar.AppBarLayout>

@@ -25,15 +25,15 @@ class GifsAdapter(private val clickListener: AdapterClickListener<Data>) : BaseA
         binding.apply {
             imageView.glide(item.images?.previewGif?.url)
 
-            if (item.isFavourite) favouriteImageView.setImageResource(R.drawable.ic_baseline_favorite)
-            else favouriteImageView.setImageResource(R.drawable.ic_outline_favorite)
+            if (item.isFavourite) favouriteImageView.setImageResource(R.drawable.ic_round_favorite_24)
+            else favouriteImageView.setImageResource(R.drawable.ic_round_favorite_border_24)
 
             favouriteImageView.setOnClickListener {
                 clickListener.onItemClick(item, position)
                 favouriteImageView.animateClick()
 
-                if (item.isFavourite) favouriteImageView.setImageResource(R.drawable.ic_outline_favorite)
-                else favouriteImageView.setImageResource(R.drawable.ic_baseline_favorite)
+                if (item.isFavourite) favouriteImageView.setImageResource(R.drawable.ic_round_favorite_border_24)
+                else favouriteImageView.setImageResource(R.drawable.ic_round_favorite_24)
                 item.isFavourite = !item.isFavourite
             }
         }

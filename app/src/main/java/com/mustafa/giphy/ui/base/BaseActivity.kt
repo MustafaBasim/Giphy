@@ -22,7 +22,7 @@ import com.mustafa.giphy.utilities.Constants
  */
 
 @SuppressLint("Registered")
-abstract class BaseActivity<VDB : ViewDataBinding>(private val layoutId: Int? = null) : AppCompatActivity() {
+abstract class BaseActivity<VDB : ViewDataBinding>(private val layoutId: Int?) : AppCompatActivity() {
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)

@@ -11,7 +11,7 @@ package com.mustafa.giphy.utilities
 object Constants {
 
     const val API_KEY = "tKvvaliKBGkjiQ2ithxsxnX3wLs2Z4tM"
-    const val PAGE_LIMIT = 4
+    const val PAGE_LIMIT = 20
 
     const val API_NO_INTERNET = "API_NO_INTERNET"
     const val TAG = "LOG_ME"

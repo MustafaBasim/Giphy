@@ -16,7 +16,7 @@ import retrofit2.http.Query
  * Date: 8/21/2021
  */
 
-interface APIInterface {
+interface MainAPIInterface {
 
     @GET(Urls.TRENDING)
     suspend fun trending(

@@ -1,10 +1,7 @@
 package com.mustafa.giphy.model.repository
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
-import com.mustafa.giphy.model.networking.NetworkClient
 import com.mustafa.giphy.utilities.Constants
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -18,8 +15,6 @@ import retrofit2.Response
  */
 
 open class BaseRepository {
-
-    protected val api = NetworkClient.initializeAPI()
 
     protected suspend fun <T> call(call: suspend () -> Response<T>): Results<T> {
         try {
@@ -47,13 +42,13 @@ open class BaseRepository {
 //                val errorMessage: ErrorMessage = gson.fromJson(errorJson, type)
 //                errorMessage.code = code
 
-                Results.Error(DataResponse( message = Constants.API_NO_INTERNET))
+                Results.Error(DataResponse(message = Constants.API_NO_INTERNET))
 
             } catch (e: Exception) {
-                Results.Error(DataResponse( message = Constants.API_NO_INTERNET))
+                Results.Error(DataResponse(message = Constants.API_NO_INTERNET))
             }
         } else {
-            Results.Error(DataResponse( message = Constants.API_NO_INTERNET))
+            Results.Error(DataResponse(message = Constants.API_NO_INTERNET))
         }
     }
 

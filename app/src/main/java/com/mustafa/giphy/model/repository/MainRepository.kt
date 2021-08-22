@@ -2,6 +2,9 @@ package com.mustafa.giphy.model.repository
 
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
+import com.mustafa.giphy.model.database.daos.FavouriteGifsDao
+import com.mustafa.giphy.model.networking.MainAPIInterface
+import javax.inject.Inject
 
 /**
  * Created by: Mustafa Basim
@@ -11,11 +14,15 @@ import com.mustafa.giphy.model.data_models.responses.DataResponse
  * Date: 8/21/2021
  */
 
-class MainRepository : BaseRepository() {
 
-    suspend fun getTrending(offset: Int): Results<DataResponse> = call { api.trending(offset) }
+class MainRepository @Inject constructor() : BaseRepository() {
 
-    suspend fun search(query: String, offset: Int): Results<DataResponse> = call { api.search(query, offset) }
+    @Inject
+    lateinit var mainAPI: MainAPIInterface
+
+    suspend fun getTrending(offset: Int): Results<DataResponse> = call { mainAPI.trending(offset) }
+
+    suspend fun search(query: String, offset: Int): Results<DataResponse> = call { mainAPI.search(query, offset) }
 
 }
 

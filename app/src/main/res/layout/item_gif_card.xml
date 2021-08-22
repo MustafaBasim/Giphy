@@ -33,15 +33,6 @@
                 tools:ignore="ContentDescription"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/favouriteButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
-                android:layout_gravity="end"
-                android:visibility="gone"
-                app:lottie_rawRes="@raw/lottie_favourite" />
-
             <ImageView
                 android:id="@+id/favouriteImageView"
                 android:layout_width="40dp"
@@ -49,7 +40,7 @@
                 android:layout_gravity="end"
                 android:padding="8dp"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_outline_favorite"
+                app:srcCompat="@drawable/ic_round_favorite_border_24"
                 android:contentDescription="@string/add_to_favourite" />
 
         </androidx.cardview.widget.CardView>
