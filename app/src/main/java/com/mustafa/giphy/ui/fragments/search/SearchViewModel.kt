@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor(databaseRepository: DatabaseRepository
     private var favouriteGifsIds: List<DataId>? = null
 
     private var job: Job? = null
-    
+
     init {
         job = viewModelScope.launch(Dispatchers.IO) {
             favouriteGifsIds = databaseRepository.getFavouriteGifsIds()
@@ -43,11 +43,11 @@ class SearchViewModel @Inject constructor(databaseRepository: DatabaseRepository
 
     fun setSearchQuery(query: String) {
         searchQuery = query
-        currentOffset = 0
-        getGifs()
+        getGifs(resetPage = true)
     }
 
-    fun getGifs() {
+    fun getGifs(resetPage: Boolean = false) {
+        if (resetPage) currentOffset = 0
         _gifsData.loading()
         job = viewModelScope.launch(Dispatchers.IO) {
             val gifsResponse = if (searchQuery.isBlank()) {

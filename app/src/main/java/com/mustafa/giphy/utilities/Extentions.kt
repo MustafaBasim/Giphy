@@ -126,14 +126,14 @@ fun View.animateGone() {
 
 fun isEng(): Boolean = Locale.getDefault().language == Locale("en").language
 
-fun ImageView.glide(url: String?, placeholderId: Int = 0, didLoad: () -> Unit = {}) {
+fun ImageView.glide(url: String?, placeholder: Drawable? = null, didLoad: (resource: Drawable?) -> Unit = {}) {
     if (isValidContextForGlide(this.context)) {
         val requestBuilder = Glide.with(this.context)
             .load(url)
 //                .error(mDefaultCardImage)
             .listener(object : RequestListener<Drawable> {
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    didLoad()
+                    didLoad(resource)
                     return false
                 }
 
@@ -142,7 +142,7 @@ fun ImageView.glide(url: String?, placeholderId: Int = 0, didLoad: () -> Unit = 
                     return false
                 }
             })
-        if (placeholderId != 0) requestBuilder.placeholder(placeholderId)
+        if (placeholder != null) requestBuilder.placeholder(placeholder)
         requestBuilder.into(this)
     }
 }

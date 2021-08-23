@@ -40,6 +40,10 @@ class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Pagin
             gifsRecyclerView.setup(adapter = gifsAdapter, isGrid = true, columns = 2)
 //            gifsRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) // TODO StaggeredGridLayoutManager
 
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel.getGifs(resetPage = true)
+            }
+
 //            paginate = Paginate.with(gifsRecyclerView, this@SearchFragment)
 //                .setLoadingTriggerThreshold(4)
 //                .addLoadingListItem(true)
@@ -69,6 +73,7 @@ class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Pagin
 //                        categoriesResponse = categories
 //                        scrollView.visible()
 //                        loadingView.finished()
+                    binding.swipeRefreshLayout.isRefreshing = false
                     viewModel.totalCount = gifsData.pagination?.totalCount ?: 0
                     Log.d("ERROR", "Page = ${gifsData.pagination?.offset}")
                     gifsData.data?.let { it1 ->
@@ -78,6 +83,7 @@ class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Pagin
                 }
 
                 doIfFailure { error ->
+                    binding.swipeRefreshLayout.isRefreshing = false
 //                        loadingView.error(error.message)
                 }
             }
