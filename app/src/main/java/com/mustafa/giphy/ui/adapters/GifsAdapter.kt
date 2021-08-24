@@ -1,21 +1,18 @@
 package com.mustafa.giphy.ui.adapters
 
-import android.graphics.drawable.Drawable
-import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
-import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-import android.widget.ProgressBar
-import androidx.core.view.children
-import androidx.databinding.ViewDataBinding
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.ItemGifCardBinding
 import com.mustafa.giphy.model.data_models.responses.Data
-import com.mustafa.giphy.ui.base.BaseAdapter
-import com.mustafa.giphy.utilities.animateClick
-import com.mustafa.giphy.utilities.glide
-import com.mustafa.giphy.utilities.gone
+import com.mustafa.giphy.ui.custom_views.ImageViewerView
+import com.mustafa.giphy.ui.custom_views.ItemLoadingView
+import com.mustafa.giphy.utilities.*
 import com.stfalcon.imageviewer.StfalconImageViewer
 
 
@@ -28,17 +25,60 @@ import com.stfalcon.imageviewer.StfalconImageViewer
  */
 
 
-class GifsAdapter(private val clickListener: AdapterClickListener<Data>) : BaseAdapter<Data>(layoutId = R.layout.item_gif_card) {
+class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerView.Adapter<GifsAdapter.Holder>() {
 
-    override fun bind(item: Data, binding: ViewDataBinding, position: Int) {
-        binding as ItemGifCardBinding
-        binding.apply {
-            var previewDrawable: Drawable? = null
-            imageView.glide(url = item.images?.previewGif?.url, didLoad = { drawableResource ->
-                previewDrawable = drawableResource?.constantState?.newDrawable()?.mutate()
-            })
+    private var isLoaderVisible = false
+    private val arrayList = ArrayList<Data>()
 
-            titleTextView.text = item.title
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifsAdapter.Holder {
+        val view: View = when (viewType) {
+            VIEW_TYPE_LOADING -> ItemLoadingView(parent.context)
+            else -> LayoutInflater.from(parent.context).inflate(
+                R.layout.item_gif_card,
+                parent,
+                false
+            )
+        }
+        return Holder(view, viewType)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (isLoaderVisible && position == size() - 1) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
+    }
+
+    override fun getItemCount(): Int {
+        return arrayList.count()
+    }
+
+    override fun getItemId(position: Int): Long {
+        return arrayList[position].hashCode().toLong()
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        holder.bind(arrayList[position], position)
+    }
+
+    inner class Holder(
+        private val view: View,
+        private val viewType: Int = VIEW_TYPE_NORMAL
+    ) : RecyclerView.ViewHolder(view) {
+        fun bind(item: Data, position: Int) {
+            when (viewType) {
+                VIEW_TYPE_NORMAL -> bindData(item, view, position)
+                VIEW_TYPE_LOADING -> bindLoading(item, view)
+            }
+        }
+    }
+
+    fun bindData(item: Data, view: View, position: Int) {
+        DataBindingUtil.bind<ItemGifCardBinding>(view)?.apply {
+            imageView.glide(url = item.images?.previewGif?.url)
+            if (item.title.isNullOrBlank()) {
+                titleTextView.invisible()
+            } else {
+                titleTextView.visible()
+                titleTextView.text = item.title
+            }
 
             if (item.isFavourite) {
                 favouriteImageView.setImageResource(R.drawable.ic_round_favorite_24)
@@ -47,11 +87,11 @@ class GifsAdapter(private val clickListener: AdapterClickListener<Data>) : BaseA
             }
 
             cardView.setOnClickListener {
-                openImage(imageView, previewDrawable, item.images?.original?.url)
+                openImage(imageView, item)
             }
 
             favouriteImageView.setOnClickListener {
-                clickListener.onItemClick(item, position)
+                clickListener.onFavouriteClicked(item, position)
                 favouriteImageView.animateClick()
 
                 if (item.isFavourite) {
@@ -64,28 +104,101 @@ class GifsAdapter(private val clickListener: AdapterClickListener<Data>) : BaseA
         }
     }
 
-    private fun openImage(imageView: ImageView, previewDrawable: Drawable?, originalUrl: String?) {
-        val progressBarView = LinearLayout(imageView.context).apply {
-            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            setBackgroundResource(android.R.color.transparent)
-            this.addView(ProgressBar(imageView.context).apply {
-                layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                    gravity = Gravity.CENTER
-                    setBackgroundResource(android.R.color.transparent)
-                }
-            })
-        }
+    private fun openImage(imageView: ImageView, item: Data) {
+        val imageViewerView = ImageViewerView(imageView.context)
 
-        StfalconImageViewer.Builder(imageView.context, listOf(originalUrl)) { view, image ->
-            view.glide(url = image, placeholder = previewDrawable, didLoad = {
-                progressBarView.children.firstOrNull()?.gone()
+        imageViewerView.setTitle(item.title)
+
+        StfalconImageViewer.Builder(imageView.context, listOf(item.images?.original?.url)) { view, image ->
+            view.glide(url = image, placeholder = item.images?.previewGif?.url, didLoad = {
+                imageViewerView.hideProgress()
             })
         }
             .withBackgroundColorResource(android.R.color.transparent)
             .allowZooming(false)
             .withHiddenStatusBar(false)
             .withTransitionFrom(imageView)
-            .withOverlayView(progressBarView)
+            .withOverlayView(imageViewerView)
             .show()
+    }
+
+    fun removeFromFavourite(item: Data) {
+        arrayList.find { it.id == item.id }?.let {
+            it.isFavourite = false
+            notifyItemChanged(arrayList.indexOf(it))
+        }
+    }
+
+    fun addLoading() {
+        if (!isLoaderVisible) {
+            isLoaderVisible = true
+            arrayList.add(Data(type = TYPE_LOADING))
+            notifyItemInserted(arrayList.size - 1)
+        }
+    }
+
+    fun removeLoading() {
+        isLoaderVisible = false
+        arrayList.removeAt(arrayList.size - 1)
+        notifyItemRemoved(arrayList.size - 1)
+    }
+
+    fun setLoadingError(message: String?) {
+        arrayList.lastOrNull {
+            if (it.type == TYPE_LOADING) {
+                it.type = TYPE_ERROR
+                it.title = message
+                notifyItemChanged(size() - 1)
+            }
+            true
+        }
+    }
+
+    fun bindLoading(item: Data, view: View) {
+        (view as? ItemLoadingView)?.apply {
+            retryButtonClicked {
+                item.type = TYPE_LOADING
+                notifyItemChanged(size() - 1)
+                clickListener.onPageRetryClicked()
+            }
+            when (item.type) {
+                TYPE_LOADING -> loading()
+                TYPE_ERROR -> error(item.title)
+            }
+        }
+    }
+
+    fun addAll(items: ArrayList<Data>) {
+        DiffUtil.calculateDiff(DiffUtilCallback(arrayList, items)).run {
+            arrayList.clear()
+            arrayList.addAll(items)
+            dispatchUpdatesTo(this@GifsAdapter)
+        }
+    }
+
+    fun addAllAtBottom(items: ArrayList<Data>, notify: Boolean = true) {
+        val size = size()
+        arrayList.addAll(items)
+        if (notify) notifyItemRangeInserted(size, items.size)
+    }
+
+    fun size(): Int = arrayList.size
+
+    fun clear() {
+        arrayList.clear()
+        notifyDataSetChanged()
+    }
+
+    interface AdapterClickListener {
+        fun onFavouriteClicked(data: Data, position: Int)
+        fun onPageRetryClicked() {}
+    }
+
+    companion object {
+        const val TYPE_LOADING = "TYPE_LOADING"
+        const val TYPE_ERROR = "TYPE_ERROR"
+
+        const val VIEW_TYPE_LOADING = 0
+        const val VIEW_TYPE_NORMAL = 1
     }
 }

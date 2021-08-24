@@ -14,6 +14,12 @@
         <item name="fontFamily">@font/rubik</item>
     </style>
 
+    <style name="tabTextFont" parent="@android:style/TextAppearance.Widget.TabWidget">
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="Theme.FreshWorksGiphy.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

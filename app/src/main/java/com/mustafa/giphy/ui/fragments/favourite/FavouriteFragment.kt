@@ -1,7 +1,6 @@
 package com.mustafa.giphy.ui.fragments.favourite
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +13,14 @@ import com.mustafa.giphy.databinding.FragmentFavouriteBinding
 import com.mustafa.giphy.model.data_models.responses.Data
 import com.mustafa.giphy.ui.activities.main.MainViewModel
 import com.mustafa.giphy.ui.adapters.GifsAdapter
-import com.mustafa.giphy.ui.base.BaseAdapter
 import com.mustafa.giphy.utilities.ObjectsMapper.toGifData
+import com.mustafa.giphy.utilities.gone
 import com.mustafa.giphy.utilities.setup
+import com.mustafa.giphy.utilities.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavouriteFragment : Fragment(), BaseAdapter.AdapterClickListener<Data> {
+class FavouriteFragment : Fragment(), GifsAdapter.AdapterClickListener {
 
     private val viewModel: FavouriteViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -43,47 +43,33 @@ class FavouriteFragment : Fragment(), BaseAdapter.AdapterClickListener<Data> {
 
         setupObserves()
 
-//        viewModel.getGifs()
-
         return binding.root
     }
 
     private fun setupObserves() {
-        viewModel.favouriteGifsData.observe(viewLifecycleOwner, {
-            it.apply {
-                Log.d("ERROR", " favouriteGifsData = $it ")
-                val arrayList = ArrayList<Data>()
-                it.forEach { favouriteGif ->
-                    arrayList.add(favouriteGif.toGifData())
+        with(binding) {
+            viewModel.favouriteGifsData.observe(viewLifecycleOwner, {
+                it.apply {
+                    val arrayList = ArrayList<Data>()
+                    it.forEach { favouriteGif ->
+                        arrayList.add(favouriteGif.toGifData())
+                    }
+                    gifsAdapter.addAll(arrayList)
+                    gifsRecyclerView.smoothScrollToPosition(0) // TODO test this
+
+                    if (arrayList.isEmpty()) {
+                        lottieAnimationView.visible()
+                        noFavouritesMessageTextView.visible()
+                    } else {
+                        lottieAnimationView.gone()
+                        noFavouritesMessageTextView.gone()
+                    }
                 }
-                gifsAdapter.addAll(arrayList)
-                binding.gifsRecyclerView.smoothScrollToPosition(0)
-//                doIfLoading {
-////                        scrollView.gone()
-////                        loadingView.loading()
-//                }
-//
-//                doIfSuccess { gifsData ->
-////                        categoriesResponse = categories
-////                        scrollView.visible()
-////                        loadingView.finished()
-////                    viewModel.totalCount = gifsData.pagination?.totalCount ?: 0
-////                    Log.d("ERROR", "Page = ${gifsData.pagination?.offset}")
-//                    gifsData.let { data ->
-//                        gifsAdapter.addAll(data)
-////                        if (gifsData.pagination?.offset == 0) gifsAdapter.addAll(it1)
-////                        else gifsAdapter.addAllAtBottom(it1)
-//                    }
-//                }
-//
-//                doIfFailure { error ->
-////                        loadingView.error(error.message)
-//                }
-            }
-        })
+            })
+        }
     }
 
-    override fun onItemClick(data: Data, position: Int) {
+    override fun onFavouriteClicked(data: Data, position: Int) {
         if (data.isFavourite) mainViewModel.removeFromFavourite(data, notifyObservers = true)
     }
 

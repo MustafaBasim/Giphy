@@ -1,12 +1,6 @@
 package com.mustafa.giphy.utilities
 
 import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.RecyclerView
-import com.mustafa.giphy.ui.custom_views.ItemLoadingView
-import com.mustafa.giphy.ui.fragments.search.SearchViewModel
-import com.paginate.recycler.LoadingListItemCreator
 
 /**
  * Created by: Mustafa Basim

@@ -2,7 +2,9 @@ package com.mustafa.giphy.ui.base
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
@@ -79,6 +81,14 @@ abstract class BaseActivity<VDB : ViewDataBinding>(private val layoutId: Int?) :
         views.forEach {
             it.visibility = View.VISIBLE
         }
+    }
+
+    fun Int.toDp(): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            resources.displayMetrics
+        ).toInt()
     }
 
 //    fun errorMsg(msg: String?): String = if (msg != Constants.API_NO_INTERNET && msg != null) msg else getString(R.string.error_message)

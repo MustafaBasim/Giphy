@@ -1,13 +1,14 @@
 package com.mustafa.giphy.utilities
 
 import androidx.recyclerview.widget.DiffUtil
+import com.mustafa.giphy.model.data_models.responses.Data
 
 
-open class DiffUtilCallback<T>(private val oldList: ArrayList<T>, private val newList: ArrayList<T>) :
+open class DiffUtilCallback(private val oldList: ArrayList<Data>, private val newList: ArrayList<Data>) :
     DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        newList[newItemPosition] == oldList[oldItemPosition]
+        newList[newItemPosition].id == oldList[oldItemPosition].id
 
     override fun getOldListSize(): Int = oldList.size
 

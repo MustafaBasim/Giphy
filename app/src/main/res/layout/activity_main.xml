@@ -21,38 +21,52 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary">
 
-            <!--            <TextView-->
-            <!--                android:id="@+id/title"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:gravity="center"-->
-            <!--                android:minHeight="?actionBarSize"-->
-            <!--                android:padding="@dimen/appbar_padding"-->
-            <!--                android:text="@string/app_name"-->
-            <!--                android:textColor="?attr/colorOnPrimary"-->
-            <!--                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
-
-            <!--            TODO enhance-->
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                app:iconifiedByDefault="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
-                app:queryHint="@string/search_here" />
+                android:animateLayoutChanges="true"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="24dp"
+                    android:fontFamily="@font/rubik"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="@string/app_name"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="start"
+                    app:iconifiedByDefault="true"
+                    android:layoutDirection="rtl"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:queryHint="@string/search_here" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
-                app:tabInlineLabel="true"
-                app:tabIndicatorColor="@color/less_white"
                 app:tabIconTint="@color/tab_icon_color_selector"
+                app:tabIndicatorColor="@color/less_white"
+                app:tabInlineLabel="true"
+                app:tabTextAppearance="@style/tabTextFont"
                 app:tabSelectedTextColor="?attr/colorOnPrimary"
                 app:tabTextColor="@color/lighter_gray" />
         </com.google.android.material.appbar.AppBarLayout>

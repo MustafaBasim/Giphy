@@ -3,7 +3,7 @@ package com.mustafa.giphy.ui.activities.main
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.ActivityMainBinding
@@ -11,6 +11,8 @@ import com.mustafa.giphy.ui.adapters.SectionsPagerAdapter
 import com.mustafa.giphy.ui.base.BaseActivity
 import com.mustafa.giphy.utilities.SnackbarUndoListener
 import com.mustafa.giphy.utilities.hideKeyboard
+import com.mustafa.giphy.utilities.invisible
+import com.mustafa.giphy.utilities.visible
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -20,6 +22,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(layoutId = R.layout.activ
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate() {
+        setupViewPager()
+        setupSearchView()
+        toolbarHandlingWhenTabChanged()
+    }
+
+    private fun setupViewPager() {
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
         val viewPager: ViewPager2 = binding.viewPager
         viewPager.adapter = sectionsPagerAdapter
@@ -27,36 +35,52 @@ class MainActivity : BaseActivity<ActivityMainBinding>(layoutId = R.layout.activ
         TabLayoutMediator(binding.tabs, viewPager) { tab, position ->
             when (position) {
                 0 -> {
-                    tab.text = getString(R.string.tab_search)
-                    tab.setIcon(R.drawable.ic_round_search_24)
+                    tab.id = 0
+                    tab.text = getString(R.string.tab_trending)
+                    tab.setIcon(R.drawable.ic_trending)
                 }
                 else -> {
+                    tab.id = 1
                     tab.text = getString(R.string.tab_favourite)
                     tab.setIcon(R.drawable.ic_round_favorite_24)
                 }
             }
         }.attach()
-
-        setupSearchView()
-        setupObservers()
     }
 
-    private fun setupObservers() {
-        viewModel.removeFromFavourite.observe(this, {
+    private fun toolbarHandlingWhenTabChanged() {
+        with(binding) {
+            searchView.setOnSearchClickListener {
+                title.invisible()
+            }
+            searchView.setOnCloseListener {
+                title.visible()
+                false
+            }
+            tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    when (tab?.id) {
+                        0 -> {
+                            searchView.visible()
+                            if (searchView.query.isNullOrEmpty()) {
+                                title.visible()
+                            } else {
+                                title.invisible()
+                            }
+                            searchView.isIconified = searchView.query.isNullOrEmpty()
+                        }
+                        1 -> {
+                            searchView.invisible()
+                            title.visible()
+                        }
+                    }
+                }
 
-        })
-    }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-    override fun snackbarUndoClick() {
-//        val removeFromFavouriteSnackbar = Snackbar.make(binding.root, getString(R.string.removed_from_favourite), Snackbar.LENGTH_LONG)
-//        removeFromFavouriteSnackbar.setAction(getString(R.string.undo), this)
-//        removeFromFavouriteSnackbar.addCallback( object : Snackbar.Callback() {
-//            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-//                super.onDismissed(transientBottomBar, event)
-//
-//            }
-//        })
-//        removeFromFavouriteSnackbar.show()
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+        }
     }
 
     private fun setupSearchView() {
@@ -77,5 +101,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(layoutId = R.layout.activ
                 return true
             }
         })
+    }
+
+    override fun snackbarUndoClick() { // TODO : Future feature, add undo snackbar when Gif removed from favourite
+//        val removeFromFavouriteSnackbar = Snackbar.make(binding.root, getString(R.string.removed_from_favourite), Snackbar.LENGTH_LONG)
+//        removeFromFavouriteSnackbar.setAction(getString(R.string.undo), this)
+//        removeFromFavouriteSnackbar.addCallback( object : Snackbar.Callback() {
+//            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+//                super.onDismissed(transientBottomBar, event)
+//
+//            }
+//        })
+//        removeFromFavouriteSnackbar.show()
     }
 }

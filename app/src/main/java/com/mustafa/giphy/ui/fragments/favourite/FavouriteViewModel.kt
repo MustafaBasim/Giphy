@@ -23,8 +23,6 @@ class FavouriteViewModel @Inject constructor(databaseRepository: DatabaseReposit
     var currentOffset = -Constants.PAGE_LIMIT
     var totalCount = 1
 
-    //    private val _favouriteGifsData = MutableLiveData<List<FavouriteGifsEntity>>()
-//    var favouriteGifsData: LiveData<List<FavouriteGifsEntity>> = _favouriteGifsData
     var favouriteGifsData: LiveData<List<FavouriteGifsEntity>> = databaseRepository.getFavouriteGifs(20, 0)
 
     private var searchQuery: String = ""

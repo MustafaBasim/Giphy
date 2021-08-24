@@ -1,7 +1,6 @@
 package com.mustafa.giphy.ui.fragments.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +8,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.FragmentSearchBinding
 import com.mustafa.giphy.model.data_models.responses.Data
 import com.mustafa.giphy.ui.activities.main.MainViewModel
 import com.mustafa.giphy.ui.adapters.GifsAdapter
-import com.mustafa.giphy.ui.base.BaseAdapter
 import com.mustafa.giphy.utilities.*
-import com.paginate.Paginate
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Paginate.Callbacks {
+class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPaginationListener.PaginationListener {
 
     private val viewModel: SearchViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -28,7 +26,9 @@ class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Pagin
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
     private val gifsAdapter = GifsAdapter(this)
-    private var paginate: Paginate? = null
+    private val spanCount = 2
+
+    private lateinit var pagination: ScrollPaginationListener
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,77 +37,111 @@ class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Pagin
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
 
         with(binding) {
-            gifsRecyclerView.setup(adapter = gifsAdapter, isGrid = true, columns = 2)
-//            gifsRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) // TODO StaggeredGridLayoutManager
+            setupRecyclerView()
 
             swipeRefreshLayout.setOnRefreshListener {
+                pagination.reset()
+                gifsAdapter.clear()
                 viewModel.getGifs(resetPage = true)
             }
 
-//            paginate = Paginate.with(gifsRecyclerView, this@SearchFragment)
-//                .setLoadingTriggerThreshold(4)
-//                .addLoadingListItem(true)
-//                .setLoadingListItemCreator(CustomLoadingListItemCreator(viewModel, viewLifecycleOwner) {
-//                    viewModel.getGifs()
-//                })
-//                .build()
-
+            loadingView.setupRetryButtonClick {
+                pagination.reset()
+                viewModel.getGifs(resetPage = true)
+            }
 
             setupObserves()
-
             viewModel.getGifs()
 
             return root
         }
     }
 
-    private fun setupObserves() {
-        viewModel.gifsData.observe(viewLifecycleOwner, {
-            it.apply {
-                doIfLoading {
-//                        scrollView.gone()
-//                        loadingView.loading()
-                }
+    private fun setupRecyclerView() {
+        with(binding) {
+            // TODO Future feature to make each item fits it's dimensions StaggeredGridLayoutManager
+//            gifsRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            gifsRecyclerView.setHasFixedSize(true)
+            gifsRecyclerView.adapter = gifsAdapter
 
-                doIfSuccess { gifsData ->
-//                        categoriesResponse = categories
-//                        scrollView.visible()
-//                        loadingView.finished()
-                    binding.swipeRefreshLayout.isRefreshing = false
-                    viewModel.totalCount = gifsData.pagination?.totalCount ?: 0
-                    Log.d("ERROR", "Page = ${gifsData.pagination?.offset}")
-                    gifsData.data?.let { it1 ->
-                        if (gifsData.pagination?.offset == 0) gifsAdapter.addAll(it1)
-                        else gifsAdapter.addAllAtBottom(it1)
-                    }
-                }
-
-                doIfFailure { error ->
-                    binding.swipeRefreshLayout.isRefreshing = false
-//                        loadingView.error(error.message)
+            val layoutManager = GridLayoutManager(context, spanCount)
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (isLastRowAndShouldBeCentered(position)) spanCount else 1
                 }
             }
-        })
+            gifsRecyclerView.layoutManager = layoutManager
+
+            pagination = ScrollPaginationListener(recyclerView = gifsRecyclerView, this@SearchFragment)
+        }
+    }
+
+    private fun isLastRowAndShouldBeCentered(position: Int): Boolean {
+        return if (pagination.isLoading) {
+            position == gifsAdapter.size() - 1
+        } else false
+    }
+
+    private fun setupObserves() {
+        with(binding) {
+            viewModel.gifsData.observe(viewLifecycleOwner, {
+                it.apply {
+                    doIfLoading {
+                        if (pagination.isLoading) {
+                            gifsAdapter.addLoading()
+                        } else {
+                            loadingView.loading()
+                            swipeRefreshLayout.gone()
+                        }
+                    }
+
+                    doIfSuccess { gifsData ->
+                        if (!pagination.isLoading) {
+                            if (gifsData.data.isNullOrEmpty()) {
+                                swipeRefreshLayout.gone()
+                                loadingView.noResult()
+                            } else {
+                                swipeRefreshLayout.visible()
+                                loadingView.finished()
+                            }
+                        } else {
+                            gifsAdapter.removeLoading()
+                            pagination.finished(isLastPage = gifsData.data.isNullOrEmpty())
+                        }
+                        swipeRefreshLayout.isRefreshing = false
+
+                        gifsData.data?.let { nonNullData ->
+                            if (gifsData.pagination?.offset == 0) gifsAdapter.addAll(nonNullData)
+                            else gifsAdapter.addAllAtBottom(nonNullData)
+                        }
+                    }
+
+                    doIfFailure { error ->
+                        binding.swipeRefreshLayout.isRefreshing = false
+
+                        if (!pagination.isLoading) {
+                            loadingView.error(error.message)
+                            swipeRefreshLayout.gone()
+                        } else {
+                            gifsAdapter.setLoadingError(error.message)
+                        }
+                    }
+                }
+            })
+        }
 
         mainViewModel.searchQuery.observe(viewLifecycleOwner, { searchQuery ->
+            gifsAdapter.clear()
+            pagination.reset()
             viewModel.setSearchQuery(searchQuery)
         })
 
         mainViewModel.removeFromFavourite.observe(viewLifecycleOwner, { removedData ->
-            gifsAdapter.getAll().find { it.id == removedData.id }?.let {
-                it.isFavourite = false
-                gifsAdapter.notifyItemChanged(gifsAdapter.getAll().indexOf(it))
-            }
+            gifsAdapter.removeFromFavourite(removedData)
         })
     }
 
-    override fun onLoadMore() {
-        Log.d("ERROR", " onLoadMore ")
-        viewModel.currentOffset += Constants.PAGE_LIMIT
-        viewModel.getGifs()
-    }
-
-    override fun onItemClick(data: Data, position: Int) {
+    override fun onFavouriteClicked(data: Data, position: Int) {
         if (data.isFavourite) {
             mainViewModel.removeFromFavourite(data, notifyObservers = false)
         } else {
@@ -115,14 +149,17 @@ class SearchFragment : Fragment(), BaseAdapter.AdapterClickListener<Data>, Pagin
         }
     }
 
-    override fun isLoading(): Boolean = viewModel.isLoading()
+    override fun onPageRetryClicked() {
+        viewModel.getGifs()
+    }
 
-    override fun hasLoadedAllItems(): Boolean = viewModel.hasLoadedAllItems()
+    override fun onLoadMore(nextOffset: Int) {
+        viewModel.currentOffset = nextOffset
+        viewModel.getGifs()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        paginate?.unbind()
-        paginate = null
         _binding = null
     }
 }

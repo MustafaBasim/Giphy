@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -26,9 +25,10 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.mustafa.giphy.R
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
-import com.mustafa.giphy.ui.base.BaseAdapter
+import com.mustafa.giphy.ui.adapters.GifsAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -89,15 +89,15 @@ fun View.animateClick() {
 }
 
 fun View.gone() {
-    this.visibility = View.GONE
+    if (this.visibility != View.GONE) this.visibility = View.GONE
 }
 
 fun View.visible() {
-    this.visibility = View.VISIBLE
+    if (this.visibility != View.VISIBLE) this.visibility = View.VISIBLE
 }
 
 fun View.invisible() {
-    this.visibility = View.INVISIBLE
+    if (this.visibility != View.INVISIBLE) this.visibility = View.INVISIBLE
 }
 
 fun Int.toDp(res: Resources): Int {
@@ -126,23 +126,23 @@ fun View.animateGone() {
 
 fun isEng(): Boolean = Locale.getDefault().language == Locale("en").language
 
-fun ImageView.glide(url: String?, placeholder: Drawable? = null, didLoad: (resource: Drawable?) -> Unit = {}) {
+fun ImageView.glide(url: String?, placeholder: String? = null, didLoad: () -> Unit = {}) {
     if (isValidContextForGlide(this.context)) {
         val requestBuilder = Glide.with(this.context)
             .load(url)
-//                .error(mDefaultCardImage)
             .listener(object : RequestListener<Drawable> {
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    didLoad(resource)
+                    didLoad()
                     return false
                 }
 
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    Log.d("ERROR", " e = ${e?.message} ")
                     return false
                 }
             })
-        if (placeholder != null) requestBuilder.placeholder(placeholder)
+            .placeholder(R.drawable.ic_gif_placeholder)
+            .error(R.drawable.ic_broken_gif)
+            .thumbnail(Glide.with(context).load(placeholder))
         requestBuilder.into(this)
     }
 }
@@ -160,8 +160,8 @@ fun isValidContextForGlide(context: Context?): Boolean {
     return true
 }
 
-fun <T> RecyclerView.setup(
-    adapter: RecyclerView.Adapter<BaseAdapter<T>.Holder>,
+fun RecyclerView.setup(
+    adapter: RecyclerView.Adapter<GifsAdapter.Holder>,
     isGrid: Boolean = false,
     columns: Int = 2,
     isHorizontal: Boolean = false,
