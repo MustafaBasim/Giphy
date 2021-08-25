@@ -144,7 +144,7 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
         })
 
         mainViewModel.downloadFailed.observe(viewLifecycleOwner, { data ->
-            view?.snack("Failed to download \"${data.title}\" gif, but it will remain in favourites list", isError = true)
+            view?.snack("Failed to download \"${data.title}\" gif", isError = true)
         })
     }
 
