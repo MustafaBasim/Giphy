@@ -20,7 +20,7 @@ object ObjectsMapper {
     fun Data.toFavouriteEntity(): FavouriteGifsEntity = FavouriteGifsEntity(
         id = id ?: UUID.randomUUID().toString(),
         title = title,
-        Date().time,
+        createdAt = Date().time,
         username = username,
         originalUrl = images?.original?.url,
         previewUrl = images?.previewGif?.url

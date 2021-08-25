@@ -54,8 +54,10 @@ class FavouriteFragment : Fragment(), GifsAdapter.AdapterClickListener {
                     it.forEach { favouriteGif ->
                         arrayList.add(favouriteGif.toGifData())
                     }
+
+                    if (gifsAdapter.size() < arrayList.size) gifsRecyclerView.smoothScrollToPosition(0)
+
                     gifsAdapter.addAll(arrayList)
-                    gifsRecyclerView.smoothScrollToPosition(0) // TODO test this
 
                     if (arrayList.isEmpty()) {
                         lottieAnimationView.visible()

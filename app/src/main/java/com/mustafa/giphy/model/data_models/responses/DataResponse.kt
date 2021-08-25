@@ -13,6 +13,6 @@ data class DataResponse(
     @SerializedName("meta")
     val meta: Meta? = null,
 
-    @SerializedName("message") // in case there was an error with the API_KEY
+    @SerializedName("message") // in case there was an error with the API_KEY, this field is received
     val message: String? = null
 )

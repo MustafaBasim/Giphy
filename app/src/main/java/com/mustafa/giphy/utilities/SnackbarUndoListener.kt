@@ -12,8 +12,8 @@ import android.view.View
 
 interface SnackbarUndoListener : View.OnClickListener {
     override fun onClick(v: View) {
-
+        snackbarUndoClick()
     }
 
-    abstract fun snackbarUndoClick()
+    fun snackbarUndoClick()
 }

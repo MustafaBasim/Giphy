@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
 
     private var job: Job? = null
 
-    var currentOffset = 0 // -Constants.PAGE_LIMIT
+    private var currentOffset: Int = 0
 
     private val _gifsData = MutableLiveData<Results<DataResponse>>()
     val gifsData: LiveData<Results<DataResponse>> = _gifsData
@@ -55,6 +55,10 @@ class SearchViewModel @Inject constructor() : ViewModel() {
             }
             _gifsData.postValue(gifsResponse)
         }
+    }
+
+    fun setNewOffset(offset: Int) {
+        currentOffset = offset
     }
 
     override fun onCleared() {

@@ -42,7 +42,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(layoutId = R.layout.activ
                 else -> {
                     tab.id = 1
                     tab.text = getString(R.string.tab_favourite)
-                    tab.setIcon(R.drawable.ic_round_favorite_24)
+                    tab.setIcon(R.drawable.ic_round_favorite)
                 }
             }
         }.attach()

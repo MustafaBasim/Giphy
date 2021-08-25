@@ -120,10 +120,10 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
                         binding.swipeRefreshLayout.isRefreshing = false
 
                         if (!pagination.isLoading) {
-                            loadingView.error(error.message)
+                            loadingView.error(error.meta?.msg ?: error.message)
                             swipeRefreshLayout.gone()
                         } else {
-                            gifsAdapter.setLoadingError(error.message)
+                            gifsAdapter.setLoadingError(error.meta?.msg ?: error.message)
                         }
                     }
                 }
@@ -154,7 +154,7 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
     }
 
     override fun onLoadMore(nextOffset: Int) {
-        viewModel.currentOffset = nextOffset
+        viewModel.setNewOffset(nextOffset)
         viewModel.getGifs()
     }
 

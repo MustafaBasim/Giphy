@@ -1,5 +1,6 @@
 package com.mustafa.giphy.model.repository
 
+import com.google.gson.Gson
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
 import com.mustafa.giphy.utilities.Constants
@@ -25,25 +26,19 @@ open class BaseRepository {
                     return Results.Success(body)
                 }
             }
-            return error(response.errorBody(), response.code())
+            return error(response.errorBody())
         } catch (e: Exception) {
             return error(null)
         }
     }
 
 
-    private fun <T> error(errorBodyJson: ResponseBody?, code: Int = 404): Results<T> {
+    private fun <T> error(errorBodyJson: ResponseBody?): Results<T> {
         return if (errorBodyJson != null) {
             return try {
-//                val gson = Gson()
-
-//                val errorJson = errorBodyJson.string()
-//                val type = object : TypeToken<ErrorMessage>() {}.type
-//                val errorMessage: ErrorMessage = gson.fromJson(errorJson, type)
-//                errorMessage.code = code
-
-                Results.Error(DataResponse(message = Constants.API_NO_INTERNET))
-
+                val errorJson = errorBodyJson.string()
+                val errorMessage: DataResponse = Gson().fromJson(errorJson, DataResponse::class.java)
+                Results.Error(errorMessage)
             } catch (e: Exception) {
                 Results.Error(DataResponse(message = Constants.API_NO_INTERNET))
             }
@@ -51,9 +46,4 @@ open class BaseRepository {
             Results.Error(DataResponse(message = Constants.API_NO_INTERNET))
         }
     }
-
-//    400 validation error ==> array
-//    401 unauthenticated  , credentials error ==> message
-//    403 disabled account ==> message
-//    404 not found ==> message
 }

@@ -17,11 +17,12 @@ interface FavouriteGifsDao {
     @Delete
     suspend fun delete(favouriteGif: FavouriteGifsEntity)
 
+//    TODO Future feature to add pagination either manually or by using jetpack paging 3 library
 //    @Query("SELECT * FROM favourite_gifs_table ORDER BY created_at DESC LIMIT :pageSize OFFSET :pageIndex ")
-//    suspend fun select(pageSize: Int, pageIndex: Int): List<FavouriteGifsEntity>
+//    fun select(pageSize: Int, pageIndex: Int): Flow<List<FavouriteGifsEntity>>
 
-    @Query("SELECT * FROM favourite_gifs_table ORDER BY created_at DESC LIMIT :pageSize OFFSET :pageIndex ")
-    fun select(pageSize: Int, pageIndex: Int): LiveData<List<FavouriteGifsEntity>>
+    @Query("SELECT * FROM favourite_gifs_table ORDER BY created_at DESC")
+    fun selectAll(): LiveData<List<FavouriteGifsEntity>>
 
     @Query("SELECT id FROM favourite_gifs_table ORDER BY created_at DESC")
     fun selectIdsOnly(): List<DataId>

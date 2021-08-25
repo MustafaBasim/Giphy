@@ -4,13 +4,12 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.DataBindingUtil
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.LoadingViewBinding
 import com.mustafa.giphy.utilities.Constants
 import com.mustafa.giphy.utilities.gone
+import com.mustafa.giphy.utilities.inflateBinding
 import com.mustafa.giphy.utilities.visible
 
 
@@ -24,8 +23,19 @@ import com.mustafa.giphy.utilities.visible
 
 class LoadingView(context: Context, attributeSet: AttributeSet? = null) : ConstraintLayout(context, attributeSet) {
 
-    val binding: LoadingViewBinding = DataBindingUtil.inflate(LayoutInflater.from(this.context), R.layout.loading_view, this, true)
+    val binding: LoadingViewBinding = inflateBinding(R.layout.loading_view)
 
+    init {
+        binding.apply {
+            val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.LoadingView)
+            when (typedArray.getInteger(R.styleable.LoadingView_initialState, 0)) {
+                0 -> loading()
+                1 -> error()
+                2 -> finished()
+            }
+            typedArray.recycle()
+        }
+    }
 
     fun setupRetryButtonClick(click: () -> Unit) {
         binding.retryButton.setOnClickListener {

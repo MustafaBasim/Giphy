@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import com.mustafa.giphy.R
-import com.mustafa.giphy.databinding.ImageViewerBinding
+import com.mustafa.giphy.databinding.ImageViewerOverlayViewBinding
 import com.mustafa.giphy.utilities.gone
 
 /**
@@ -17,9 +17,9 @@ import com.mustafa.giphy.utilities.gone
  * Date: 8/23/2021
  */
 
-class ImageViewerView(context: Context, attributeSet: AttributeSet? = null) : ConstraintLayout(context, attributeSet) {
+class ImageViewerOverlayView(context: Context, attributeSet: AttributeSet? = null) : ConstraintLayout(context, attributeSet) {
 
-    val binding: ImageViewerBinding = DataBindingUtil.inflate(LayoutInflater.from(this.context), R.layout.image_viewer, this, true)
+    val binding: ImageViewerOverlayViewBinding = DataBindingUtil.inflate(LayoutInflater.from(this.context), R.layout.image_viewer_overlay_view, this, true)
 
     init {
         setBackgroundResource(android.R.color.transparent)

@@ -9,13 +9,6 @@
         tools:context=".ui.activities.main.MainActivity">
 
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +43,8 @@
                     android:gravity="start"
                     app:iconifiedByDefault="true"
                     android:layoutDirection="rtl"
+                    android:theme="@style/searchView"
+                    app:searchHintIcon="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -70,6 +65,13 @@
                 app:tabSelectedTextColor="?attr/colorOnPrimary"
                 app:tabTextColor="@color/lighter_gray" />
         </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

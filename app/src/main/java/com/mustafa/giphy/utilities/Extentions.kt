@@ -2,17 +2,11 @@ package com.mustafa.giphy.utilities
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import android.text.Editable
-import android.text.TextWatcher
-import android.text.format.DateFormat
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -29,8 +23,6 @@ import com.mustafa.giphy.R
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
 import com.mustafa.giphy.ui.adapters.GifsAdapter
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Created by: Mustafa Basim
@@ -41,46 +33,8 @@ import java.util.*
  */
 
 fun <T : ViewDataBinding> ViewGroup.inflateBinding(layout: Int): T {
-//    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//    return DataBindingUtil.inflate(inflater, layout,this,true)
     return DataBindingUtil.inflate(LayoutInflater.from(this.context), layout, this, true)
 }
-
-fun EditText.onTextChange(delay: Long = 300, afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        private var timer: Timer = Timer()
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-        override fun afterTextChanged(s: Editable) {
-            timer.cancel()
-            timer = Timer()
-            timer.schedule(
-                object : TimerTask() {
-                    override fun run() {
-                        afterTextChanged(s.toString())
-                    }
-                },
-                delay
-            )
-        }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-    })
-}
-
-fun Int.toIQD(): String = if (isEng()) "${this.format()} IQD" else "${this.format()} د.ع"
-fun Int.format(): String = String.format("%,d", this) //       2020-06-08 07:00:00
-fun Long.formatDateTime(): String =
-    SimpleDateFormat("yyyy/M/d hh:mm a", Locale.ENGLISH).format(Date(this))
-
-fun Long.formatDateTimeEng(): String =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(Date(this))
-
-fun Long.formatDateDash(): String =
-    SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(Date(this))
-
-fun Long.formatDate(): String = DateFormat.format("yyyy/M/d", Date(this)).toString()
-fun Long.formatTime(): String = DateFormat.format("hh:mm aa", Date(this)).toString()
-fun Long.formatDay(): String = DateFormat.format("d", Date(this)).toString()
 
 fun View.animateClick() {
     this.animate().scaleX(0.8F).scaleY(0.8F).setDuration(150).withEndAction {
@@ -100,14 +54,6 @@ fun View.invisible() {
     if (this.visibility != View.INVISIBLE) this.visibility = View.INVISIBLE
 }
 
-fun Int.toDp(res: Resources): Int {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this.toFloat(),
-        res.displayMetrics
-    ).toInt()
-}
-
 fun View.showKeyboard() {
     this.requestFocus()
     val inputMethodManager =
@@ -119,12 +65,6 @@ fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     imm?.hideSoftInputFromWindow(this.windowToken, 0)
 }
-
-fun View.animateGone() {
-    this.animate().alpha(0.0f).withEndAction { this.gone() }
-}
-
-fun isEng(): Boolean = Locale.getDefault().language == Locale("en").language
 
 fun ImageView.glide(url: String?, placeholder: String? = null, didLoad: () -> Unit = {}) {
     if (isValidContextForGlide(this.context)) {
@@ -180,13 +120,6 @@ fun RecyclerView.setup(
     return layoutManager
 }
 
-fun tryCatch(catchBlock: () -> Unit = {}, tryBlock: () -> Unit) {
-    try {
-        tryBlock()
-    } catch (e: Exception) {
-        catchBlock()
-    }
-}
 
 inline fun <reified T> Results<T>.doIfFailure(callback: (error: DataResponse) -> Unit) {
     if (this is Results.Error) {

@@ -1,3 +1,4 @@
+
 package com.mustafa.giphy.utilities
 
 /**
@@ -10,17 +11,9 @@ package com.mustafa.giphy.utilities
 
 object Constants {
 
+    @Suppress("SpellCheckingInspection")
     const val API_KEY = "tKvvaliKBGkjiQ2ithxsxnX3wLs2Z4tM"
+
     const val PAGE_LIMIT = 20
-
     const val API_NO_INTERNET = "API_NO_INTERNET"
-    const val TAG = "LOG_ME"
-
-    const val EDITOR = "editor"
-    const val USER = "user"
-
-    const val OTHERS_SELECTION = "غير ذلك"
-
-    const val POST_UPDATED_RECEIVER = "POST_UPDATED_RECEIVER"
-
 }

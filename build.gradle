@@ -19,6 +19,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        //noinspection JcenterRepositoryObsolete // JFrog has decided to keep JCenter as a read-only repository indefinitely
         jcenter() // Warning: this repository is going to shut down soon
         maven { url "https://jitpack.io" }
     }

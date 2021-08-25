@@ -41,7 +41,7 @@
                 android:layout_gravity="end"
                 android:padding="8dp"
                 android:background="@android:color/transparent"
-                app:srcCompat="@drawable/ic_round_favorite_border_24"
+                app:srcCompat="@drawable/ic_round_favorite_border"
                 android:contentDescription="@string/add_to_favourite" />
 
             <TextView

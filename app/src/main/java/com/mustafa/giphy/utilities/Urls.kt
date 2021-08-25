@@ -11,7 +11,7 @@ package com.mustafa.giphy.utilities
 object Urls {
 
     // API PATHS
-    const val BASE_URL = "https://api.giphy.com/v1/gifs/"
+//    const val BASE_URL = "https://api.giphy.com/v1/gifs/"
 
     const val SEARCH = "search"
     const val TRENDING = "trending"

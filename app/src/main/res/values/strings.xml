@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">FreshWorks Giphy</string>
     <string name="tab_trending">TRENDING</string>
     <string name="tab_favourite">FAVOURITE</string>
@@ -6,8 +6,8 @@
     <string name="search_here">Search here</string>
     <string name="retry">Retry</string>
     <string name="error_message">Something went wrong, please try again</string>
-    <string name="removed_from_favourite">Removed from favourite</string>
-    <string name="undo">Undo</string>
+    <string name="removed_from_favourite" tools:keep="@string/removed_from_favourite">Removed from favourite</string>
+    <string name="undo" tools:keep="@string/undo">Undo</string>
     <string name="add_favourite_gifs_message">Add your favourite gifs here by clicking the heart icon</string>
     <string name="no_result_message">No result found, try different keyword</string>
 </resources>

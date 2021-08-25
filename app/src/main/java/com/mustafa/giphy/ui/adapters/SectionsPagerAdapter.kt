@@ -2,9 +2,7 @@ package com.mustafa.giphy.ui.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.mustafa.giphy.R
 import com.mustafa.giphy.ui.fragments.favourite.FavouriteFragment
 import com.mustafa.giphy.ui.fragments.search.SearchFragment
 

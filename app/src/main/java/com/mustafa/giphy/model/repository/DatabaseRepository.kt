@@ -23,7 +23,7 @@ class DatabaseRepository @Inject constructor() {
 
 //    suspend fun getFavouriteGifs(pageSize: Int, pageIndex: Int): List<FavouriteGifsEntity> = favouriteGifsDao.select(pageSize, pageIndex)
 
-    fun getFavouriteGifs(pageSize: Int, pageIndex: Int): LiveData<List<FavouriteGifsEntity>> = favouriteGifsDao.select(pageSize, pageIndex)
+    fun getFavouriteGifs(): LiveData<List<FavouriteGifsEntity>> = favouriteGifsDao.selectAll()
 
     fun getFavouriteGifsIds(): List<DataId> = favouriteGifsDao.selectIdsOnly()
 

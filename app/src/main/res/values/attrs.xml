@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LoadingView">
+        <attr name="initialState" format="enum">
+            <enum name="loading" value="0" />
+            <enum name="error" value="1" />
+            <enum name="finished" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

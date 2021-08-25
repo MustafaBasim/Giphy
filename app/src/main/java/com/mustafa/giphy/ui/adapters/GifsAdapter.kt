@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.ItemGifCardBinding
 import com.mustafa.giphy.model.data_models.responses.Data
-import com.mustafa.giphy.ui.custom_views.ImageViewerView
-import com.mustafa.giphy.ui.custom_views.ItemLoadingView
+import com.mustafa.giphy.ui.custom_views.ImageViewerOverlayView
+import com.mustafa.giphy.ui.custom_views.RecyclerItemLoadingView
 import com.mustafa.giphy.utilities.*
 import com.stfalcon.imageviewer.StfalconImageViewer
 
@@ -32,7 +32,7 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifsAdapter.Holder {
         val view: View = when (viewType) {
-            VIEW_TYPE_LOADING -> ItemLoadingView(parent.context)
+            VIEW_TYPE_LOADING -> RecyclerItemLoadingView(parent.context)
             else -> LayoutInflater.from(parent.context).inflate(
                 R.layout.item_gif_card,
                 parent,
@@ -46,13 +46,9 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
         return if (isLoaderVisible && position == size() - 1) VIEW_TYPE_LOADING else VIEW_TYPE_NORMAL
     }
 
-    override fun getItemCount(): Int {
-        return arrayList.count()
-    }
+    override fun getItemCount(): Int = arrayList.count()
 
-    override fun getItemId(position: Int): Long {
-        return arrayList[position].hashCode().toLong()
-    }
+    override fun getItemId(position: Int): Long = arrayList[position].hashCode().toLong()
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(arrayList[position], position)
@@ -81,9 +77,9 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
             }
 
             if (item.isFavourite) {
-                favouriteImageView.setImageResource(R.drawable.ic_round_favorite_24)
+                favouriteImageView.setImageResource(R.drawable.ic_round_favorite)
             } else {
-                favouriteImageView.setImageResource(R.drawable.ic_round_favorite_border_24)
+                favouriteImageView.setImageResource(R.drawable.ic_round_favorite_border)
             }
 
             cardView.setOnClickListener {
@@ -95,9 +91,9 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
                 favouriteImageView.animateClick()
 
                 if (item.isFavourite) {
-                    favouriteImageView.setImageResource(R.drawable.ic_round_favorite_border_24)
+                    favouriteImageView.setImageResource(R.drawable.ic_round_favorite_border)
                 } else {
-                    favouriteImageView.setImageResource(R.drawable.ic_round_favorite_24)
+                    favouriteImageView.setImageResource(R.drawable.ic_round_favorite)
                 }
                 item.isFavourite = !item.isFavourite
             }
@@ -105,20 +101,20 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
     }
 
     private fun openImage(imageView: ImageView, item: Data) {
-        val imageViewerView = ImageViewerView(imageView.context)
+        val imageViewerOverlayView = ImageViewerOverlayView(imageView.context)
 
-        imageViewerView.setTitle(item.title)
+        imageViewerOverlayView.setTitle(item.title)
 
         StfalconImageViewer.Builder(imageView.context, listOf(item.images?.original?.url)) { view, image ->
             view.glide(url = image, placeholder = item.images?.previewGif?.url, didLoad = {
-                imageViewerView.hideProgress()
+                imageViewerOverlayView.hideProgress()
             })
         }
             .withBackgroundColorResource(android.R.color.transparent)
             .allowZooming(false)
             .withHiddenStatusBar(false)
             .withTransitionFrom(imageView)
-            .withOverlayView(imageViewerView)
+            .withOverlayView(imageViewerOverlayView)
             .show()
     }
 
@@ -155,7 +151,7 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
     }
 
     fun bindLoading(item: Data, view: View) {
-        (view as? ItemLoadingView)?.apply {
+        (view as? RecyclerItemLoadingView)?.apply {
             retryButtonClicked {
                 item.type = TYPE_LOADING
                 notifyItemChanged(size() - 1)

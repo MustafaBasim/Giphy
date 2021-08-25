@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.ItemLoadingBinding
 import com.mustafa.giphy.utilities.Constants
-import com.mustafa.giphy.utilities.gone
 import com.mustafa.giphy.utilities.invisible
 import com.mustafa.giphy.utilities.visible
 
@@ -22,7 +21,7 @@ import com.mustafa.giphy.utilities.visible
  * Date: 8/22/2021
  */
 
-class ItemLoadingView(context: Context, attributeSet: AttributeSet? = null) : ConstraintLayout(context, attributeSet) {
+class RecyclerItemLoadingView(context: Context, attributeSet: AttributeSet? = null) : ConstraintLayout(context, attributeSet) {
 
     val binding: ItemLoadingBinding = DataBindingUtil.inflate(LayoutInflater.from(this.context), R.layout.item_loading, this, true)
 
