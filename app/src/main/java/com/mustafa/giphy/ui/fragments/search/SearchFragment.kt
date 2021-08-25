@@ -142,10 +142,6 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
         mainViewModel.removeFromFavourite.observe(viewLifecycleOwner, { removedData ->
             gifsAdapter.removeFromFavourite(removedData)
         })
-
-        mainViewModel.downloadFailed.observe(viewLifecycleOwner, { data ->
-            view?.snack("Failed to download \"${data.title}\" gif", isError = true)
-        })
     }
 
     override fun onFavouriteClicked(data: Data, position: Int) {

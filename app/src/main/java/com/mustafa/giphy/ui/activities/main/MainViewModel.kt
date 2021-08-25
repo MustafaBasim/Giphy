@@ -30,9 +30,6 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _removeFromFavourite = MutableLiveData<Data>()
     var removeFromFavourite: LiveData<Data> = _removeFromFavourite
 
-    private val _downloadFailed = MutableLiveData<Data>()
-    var downloadFailed: LiveData<Data> = _downloadFailed
-
     fun setSearchQuery(query: String) {
         _searchQuery.postValue(query)
     }
@@ -43,7 +40,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
                 databaseRepository.addToFavourite(data)
                 filesManager.downloadFile(data)
             } else {
-                _downloadFailed.postValue(data)
+                _removeFromFavourite.postValue(data)
             }
         }
     }
