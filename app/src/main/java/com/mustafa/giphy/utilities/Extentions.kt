@@ -3,6 +3,7 @@ package com.mustafa.giphy.utilities
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,10 +20,13 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.mustafa.giphy.R
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
 import com.mustafa.giphy.ui.adapters.GifsAdapter
+import java.io.File
 
 /**
  * Created by: Mustafa Basim
@@ -54,6 +58,16 @@ fun View.invisible() {
     if (this.visibility != View.INVISIBLE) this.visibility = View.INVISIBLE
 }
 
+fun View.snack(text: String, isLong: Boolean = true, isError: Boolean = false) {
+    val snackBar = Snackbar.make(this, text, if (isLong) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    if (isError) {
+        snackBar.setBackgroundTint(this.resources.getColor(R.color.red_error, null))
+        snackBar.setTextColor(this.resources.getColor(R.color.less_white, null))
+    }
+    snackBar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+    snackBar.show()
+}
+
 fun View.showKeyboard() {
     this.requestFocus()
     val inputMethodManager =
@@ -66,7 +80,7 @@ fun View.hideKeyboard() {
     imm?.hideSoftInputFromWindow(this.windowToken, 0)
 }
 
-fun ImageView.glide(url: String?, placeholder: String? = null, didLoad: () -> Unit = {}) {
+fun ImageView.glide(url: String?, thumbnail: String? = null, didLoad: () -> Unit = {}) {
     if (isValidContextForGlide(this.context)) {
         val requestBuilder = Glide.with(this.context)
             .load(url)
@@ -82,7 +96,9 @@ fun ImageView.glide(url: String?, placeholder: String? = null, didLoad: () -> Un
             })
             .placeholder(R.drawable.ic_gif_placeholder)
             .error(R.drawable.ic_broken_gif)
-            .thumbnail(Glide.with(context).load(placeholder))
+
+        if (thumbnail != null) requestBuilder.thumbnail(Glide.with(context).load(thumbnail))
+
         requestBuilder.into(this)
     }
 }
@@ -120,6 +136,9 @@ fun RecyclerView.setup(
     return layoutManager
 }
 
+fun Context.getGifsLocalPath(id: String): String {
+    return this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString() + File.separator.toString() + id
+}
 
 inline fun <reified T> Results<T>.doIfFailure(callback: (error: DataResponse) -> Unit) {
     if (this is Results.Error) {

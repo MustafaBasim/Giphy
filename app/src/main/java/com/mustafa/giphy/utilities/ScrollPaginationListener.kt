@@ -1,6 +1,7 @@
 package com.mustafa.giphy.utilities
 
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 /**
@@ -18,7 +19,7 @@ class ScrollPaginationListener(recyclerView: RecyclerView, paginationListener: P
     var isLoading: Boolean = false
 
     init {
-        val gridLayoutManager = recyclerView.layoutManager as GridLayoutManager
+        val gridLayoutManager = recyclerView.layoutManager as LinearLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -46,6 +47,7 @@ class ScrollPaginationListener(recyclerView: RecyclerView, paginationListener: P
     }
 
     fun reset() {
+        isLoading = false
         isLastPage = false
         currentOffset = 0
     }

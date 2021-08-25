@@ -23,7 +23,9 @@ object ObjectsMapper {
         createdAt = Date().time,
         username = username,
         originalUrl = images?.original?.url,
-        previewUrl = images?.previewGif?.url
+        previewUrl = images?.previewGif?.url,
+        isAvailableOffline = isAvailableOffline,
+        downloadId = downloadId
     )
 
     fun FavouriteGifsEntity.toGifData(): Data = Data(
@@ -34,6 +36,8 @@ object ObjectsMapper {
             original = Original(url = originalUrl),
             previewGif = PreviewGif(url = previewUrl)
         ),
+        downloadId = downloadId,
+        isAvailableOffline = isAvailableOffline ?: false,
         isFavourite = true
     )
 

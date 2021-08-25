@@ -11,8 +11,14 @@ interface FavouriteGifsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(favouriteGif: FavouriteGifsEntity): Long
 
+    @Update()
+    suspend fun update(favouriteGif: FavouriteGifsEntity)
+
     @Query("SELECT * FROM favourite_gifs_table WHERE id = :id")
     suspend fun selectById(id: String): FavouriteGifsEntity
+
+    @Query("SELECT * FROM favourite_gifs_table WHERE download_id = :downloadId")
+    suspend fun selectByDownloadId(downloadId: Long): FavouriteGifsEntity?
 
     @Delete
     suspend fun delete(favouriteGif: FavouriteGifsEntity)

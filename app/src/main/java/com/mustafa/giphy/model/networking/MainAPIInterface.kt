@@ -3,9 +3,11 @@ package com.mustafa.giphy.model.networking
 import com.mustafa.giphy.model.data_models.responses.DataResponse
 import com.mustafa.giphy.utilities.Constants
 import com.mustafa.giphy.utilities.Urls
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 
 /**

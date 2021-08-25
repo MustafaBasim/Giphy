@@ -25,6 +25,10 @@ class RecyclerItemLoadingView(context: Context, attributeSet: AttributeSet? = nu
 
     val binding: ItemLoadingBinding = DataBindingUtil.inflate(LayoutInflater.from(this.context), R.layout.item_loading, this, true)
 
+    init {
+        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    }
+
     fun retryButtonClicked(click: () -> Unit) {
         binding.retryButton.setOnClickListener {
             click()

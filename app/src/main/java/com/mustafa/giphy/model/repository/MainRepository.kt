@@ -3,6 +3,8 @@ package com.mustafa.giphy.model.repository
 import com.mustafa.giphy.model.data_models.Results
 import com.mustafa.giphy.model.data_models.responses.DataResponse
 import com.mustafa.giphy.model.networking.MainAPIInterface
+import okhttp3.ResponseBody
+import retrofit2.Response
 import javax.inject.Inject
 
 /**

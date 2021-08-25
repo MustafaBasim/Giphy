@@ -31,6 +31,12 @@ class DatabaseRepository @Inject constructor() {
         favouriteGifsDao.insert(data.toFavouriteEntity())
     }
 
+    suspend fun getFavouriteGifByDownloadId(downloadId: Long): FavouriteGifsEntity? = favouriteGifsDao.selectByDownloadId(downloadId)
+
+    suspend fun update(data: Data) {
+        favouriteGifsDao.update(data.toFavouriteEntity())
+    }
+
     suspend fun removeFromFavourite(data: Data) {
         favouriteGifsDao.delete(data.toFavouriteEntity())
     }

@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import com.mustafa.giphy.R
 import com.mustafa.giphy.databinding.FragmentSearchBinding
 import com.mustafa.giphy.model.data_models.responses.Data
@@ -26,7 +25,7 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!! // This property is only valid between onCreateView and onDestroyView.
     private val gifsAdapter = GifsAdapter(this)
-    private val spanCount = 2
+//    private val spanCount = 2
 
     private lateinit var pagination: ScrollPaginationListener
 
@@ -61,26 +60,28 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
         with(binding) {
             // TODO Future feature to make each item fits it's dimensions StaggeredGridLayoutManager
 //            gifsRecyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            gifsRecyclerView.setHasFixedSize(true)
-            gifsRecyclerView.adapter = gifsAdapter
+//            gifsRecyclerView.setHasFixedSize(true)
+//            gifsRecyclerView.adapter = gifsAdapter
+//
+//            val layoutManager = GridLayoutManager(context, spanCount)
+//            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+//                override fun getSpanSize(position: Int): Int {
+//                    return if (isLastRowAndShouldBeCentered(position)) spanCount else 1
+//                }
+//            }
+//            gifsRecyclerView.layoutManager = layoutManager
 
-            val layoutManager = GridLayoutManager(context, spanCount)
-            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (isLastRowAndShouldBeCentered(position)) spanCount else 1
-                }
-            }
-            gifsRecyclerView.layoutManager = layoutManager
+            gifsRecyclerView.setup(gifsAdapter)
 
             pagination = ScrollPaginationListener(recyclerView = gifsRecyclerView, this@SearchFragment)
         }
     }
 
-    private fun isLastRowAndShouldBeCentered(position: Int): Boolean {
-        return if (pagination.isLoading) {
-            position == gifsAdapter.size() - 1
-        } else false
-    }
+//    private fun isLastRowAndShouldBeCentered(position: Int): Boolean {
+//        return if (pagination.isLoading) {
+//            position == gifsAdapter.size() - 1
+//        } else false
+//    }
 
     private fun setupObserves() {
         with(binding) {
@@ -111,8 +112,10 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
                         swipeRefreshLayout.isRefreshing = false
 
                         gifsData.data?.let { nonNullData ->
-                            if (gifsData.pagination?.offset == 0) gifsAdapter.addAll(nonNullData)
-                            else gifsAdapter.addAllAtBottom(nonNullData)
+                            if (gifsData.pagination?.offset == 0) {
+                                gifsRecyclerView.smoothScrollToPosition(0)
+                                gifsAdapter.addAll(nonNullData)
+                            } else gifsAdapter.addAllAtBottom(nonNullData)
                         }
                     }
 
@@ -138,6 +141,10 @@ class SearchFragment : Fragment(), GifsAdapter.AdapterClickListener, ScrollPagin
 
         mainViewModel.removeFromFavourite.observe(viewLifecycleOwner, { removedData ->
             gifsAdapter.removeFromFavourite(removedData)
+        })
+
+        mainViewModel.downloadFailed.observe(viewLifecycleOwner, { data ->
+            view?.snack("Failed to download \"${data.title}\" gif, but it will remain in favourites list", isError = true)
         })
     }
 

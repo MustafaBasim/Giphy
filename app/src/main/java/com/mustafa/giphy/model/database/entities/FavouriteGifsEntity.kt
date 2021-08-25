@@ -25,5 +25,11 @@ data class FavouriteGifsEntity(
     var originalUrl: String?,
 
     @ColumnInfo(name = "preview_url")
-    var previewUrl: String?
+    var previewUrl: String?,
+
+    @ColumnInfo(name = "is_available_offline")
+    var isAvailableOffline: Boolean?,
+
+    @ColumnInfo(name = "download_id")
+    var downloadId: Long?
 )

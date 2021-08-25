@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mustafa.giphy.model.data_models.responses.Data
 import com.mustafa.giphy.model.repository.DatabaseRepository
+import com.mustafa.giphy.model.services.FilesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,6 +19,9 @@ class MainViewModel @Inject constructor() : ViewModel() {
     @Inject
     lateinit var databaseRepository: DatabaseRepository
 
+    @Inject
+    lateinit var filesManager: FilesManager
+
     private var job: Job? = null
 
     private val _searchQuery = MutableLiveData<String>()
@@ -26,13 +30,21 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _removeFromFavourite = MutableLiveData<Data>()
     var removeFromFavourite: LiveData<Data> = _removeFromFavourite
 
+    private val _downloadFailed = MutableLiveData<Data>()
+    var downloadFailed: LiveData<Data> = _downloadFailed
+
     fun setSearchQuery(query: String) {
         _searchQuery.postValue(query)
     }
 
     fun addToFavourite(data: Data) {
         job = viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.addToFavourite(data)
+            if (data.images?.original?.url != null && data.id != null) {
+                databaseRepository.addToFavourite(data)
+                filesManager.downloadFile(data)
+            } else {
+                _downloadFailed.postValue(data)
+            }
         }
     }
 
@@ -40,6 +52,7 @@ class MainViewModel @Inject constructor() : ViewModel() {
         if (notifyObservers) _removeFromFavourite.postValue(data)
         job = viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.removeFromFavourite(data)
+            filesManager.deleteFile(data)
         }
     }
 

@@ -68,6 +68,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(layoutId = R.layout.activ
                                 title.invisible()
                             }
                             searchView.isIconified = searchView.query.isNullOrEmpty()
+                            searchView.hideKeyboard()
                         }
                         1 -> {
                             searchView.invisible()

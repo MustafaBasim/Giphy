@@ -68,7 +68,13 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
 
     fun bindData(item: Data, view: View, position: Int) {
         DataBindingUtil.bind<ItemGifCardBinding>(view)?.apply {
-            imageView.glide(url = item.images?.previewGif?.url)
+
+            if (item.isAvailableOffline && item.id != null) {
+                imageView.glide(url = root.context.getGifsLocalPath(item.id))
+            } else {
+                imageView.glide(url = item.images?.original?.url, thumbnail = item.images?.previewGif?.url)
+            }
+
             if (item.title.isNullOrBlank()) {
                 titleTextView.invisible()
             } else {
@@ -106,9 +112,16 @@ class GifsAdapter(private val clickListener: AdapterClickListener) : RecyclerVie
         imageViewerOverlayView.setTitle(item.title)
 
         StfalconImageViewer.Builder(imageView.context, listOf(item.images?.original?.url)) { view, image ->
-            view.glide(url = image, placeholder = item.images?.previewGif?.url, didLoad = {
-                imageViewerOverlayView.hideProgress()
-            })
+
+            if (item.isAvailableOffline && item.id != null) {
+                view.glide(url = imageView.context.getGifsLocalPath(item.id), didLoad = {
+                    imageViewerOverlayView.hideProgress()
+                })
+            } else {
+                view.glide(url = image, thumbnail = item.images?.previewGif?.url, didLoad = {
+                    imageViewerOverlayView.hideProgress()
+                })
+            }
         }
             .withBackgroundColorResource(android.R.color.transparent)
             .allowZooming(false)

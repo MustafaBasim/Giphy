@@ -19,5 +19,7 @@ data class Data(
     @SerializedName("user")
     val user: User? = null,
 
+    var downloadId: Long? = null,
+    var isAvailableOffline: Boolean = false,
     var isFavourite: Boolean = false
 )

@@ -32,7 +32,8 @@ class ObjectsMapperTest {
             original = Original(url = "url_link"),
             previewGif = PreviewGif(url = "url_link")
         ),
-        isFavourite = true
+        isFavourite = true,
+        downloadId = 0
     )
 
     private val favouriteGifsEntity = FavouriteGifsEntity(
@@ -41,7 +42,9 @@ class ObjectsMapperTest {
         createdAt = createdAt,
         username = "Username",
         originalUrl = "url_link",
-        previewUrl = "url_link"
+        previewUrl = "url_link",
+        isAvailableOffline = false,
+        downloadId = 0
     )
 
     @Test

@@ -10,4 +10,5 @@
     <string name="undo" tools:keep="@string/undo">Undo</string>
     <string name="add_favourite_gifs_message">Add your favourite gifs here by clicking the heart icon</string>
     <string name="no_result_message">No result found, try different keyword</string>
+    <string name="downloading_message">Downloading Favourite Gifs</string>
 </resources>
