@@ -58,7 +58,9 @@ class AppDatabaseTest {
                 createdAt = Date().time,
                 username = "Username",
                 originalUrl = "url_link",
-                previewUrl = "url_link"
+                previewUrl = "url_link",
+                isAvailableOffline = false,
+                downloadId = 0
             )
 
             favouriteGifsDao.insert(favouriteGifsEntity)
@@ -78,7 +80,9 @@ class AppDatabaseTest {
                 createdAt = Date().time,
                 username = "Username",
                 originalUrl = "url_link",
-                previewUrl = "url_link"
+                previewUrl = "url_link",
+                isAvailableOffline = false,
+                downloadId = 0
             )
             val expectedResult = listOf(DataId("1"), DataId("2"), DataId("3"))
 
@@ -103,7 +107,9 @@ class AppDatabaseTest {
                 createdAt = Date().time,
                 username = "Username",
                 originalUrl = "url_link",
-                previewUrl = "url_link"
+                previewUrl = "url_link",
+                isAvailableOffline = false,
+                downloadId = 0
             )
             favouriteGifsDao.insert(favouriteGif)
 
