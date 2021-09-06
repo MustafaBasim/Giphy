@@ -10,7 +10,7 @@ import java.util.*
 /**
  * Created by: Mustafa Basim
  * E-mail: 96.mustafa.basim@gmail.com
- * Project name: FreshWorks Giphy
+ * Project name: Giphy
  * Package: com.mustafa.giphy.utilities
  * Date: 8/21/2021
  */

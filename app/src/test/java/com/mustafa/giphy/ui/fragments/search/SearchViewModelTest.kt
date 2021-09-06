@@ -25,7 +25,7 @@ import org.junit.runners.JUnit4
 /**
  * Created by: Mustafa Basim
  * E-mail: 96.mustafa.basim@gmail.com
- * Project name: FreshWorks Giphy
+ * Project name: Giphy
  * Package: com.mustafa.giphy.ui.fragments.search
  * Date: 8/24/2021
  */

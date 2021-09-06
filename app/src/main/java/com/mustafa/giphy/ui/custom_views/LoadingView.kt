@@ -16,7 +16,7 @@ import com.mustafa.giphy.utilities.visible
 /**
  * Created by: Mustafa Basim
  * E-mail: 96.mustafa.basim@gmail.com
- * Project name: FreshWorks Giphy
+ * Project name: Giphy
  * Package: com.mustafa.giphy.ui.custom_views
  * Date: 8/22/2021
  */

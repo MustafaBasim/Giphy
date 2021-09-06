@@ -3,7 +3,7 @@ package com.mustafa.giphy.di
 /**
  * Created by: Mustafa Basim
  * E-mail: 96.mustafa.basim@gmail.com
- * Project name: FreshWorks Giphy
+ * Project name: Giphy
  * Package: com.mustafa.giphy.di
  * Date: 8/22/2021
  */

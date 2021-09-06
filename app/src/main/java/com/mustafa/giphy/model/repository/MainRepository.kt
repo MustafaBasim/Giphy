@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Created by: Mustafa Basim
  * E-mail: 96.mustafa.basim@gmail.com
- * Project name: FreshWorks Giphy
+ * Project name: Giphy
  * Package: com.mustafa.giphy.model.repository
  * Date: 8/21/2021
  */

@@ -19,7 +19,7 @@ import com.stfalcon.imageviewer.StfalconImageViewer
 /**
  * Created by: Mustafa Basim
  * E-mail: 96.mustafa.basim@gmail.com
- * Project name: FreshWorks Giphy
+ * Project name: Giphy
  * Package: com.mustafa.giphy.ui.adapter
  * Date: 8/21/2021
  */

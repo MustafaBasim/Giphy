@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:theme="@style/Theme.FreshWorksGiphy.FragmentsBackground"
+        android:theme="@style/Theme.Giphy.FragmentsBackground"
         tools:context=".ui.fragments.search.SearchFragment">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
